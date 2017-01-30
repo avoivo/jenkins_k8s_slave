@@ -13,12 +13,18 @@ else
   if [ -n "${GCLOUD_ACCOUNT}" ]; then
     echo ${GCLOUD_ACCOUNT} >> /usr/local/auth.base64
     base64 -d /usr/local/auth.base64 >> /usr/local/auth.json
-    gcloud auth activate-service-account --key-file=/usr/local/auth.json ${GCLOUD_ACCOUNT_EMAIL}
+		export GOOGLE_APPLICATION_CREDENTIALS="/usr/local/auth.json"
+    gcloud auth activate-service-account --project ${GCLOUD_PROJECT} --key-file=/usr/local/auth.json ${GCLOUD_ACCOUNT_EMAIL}
   fi
 
   if [ -n "${GCLOUD_ACCOUNT_FILE}" ]; then
-    gcloud auth activate-service-account --key-file=${GCLOUD_ACCOUNT_FILE} ${GCLOUD_ACCOUNT_EMAIL}
+		export GOOGLE_APPLICATION_CREDENTIALS=${GCLOUD_ACCOUNT_FILE}
+    gcloud auth activate-service-account --project ${GCLOUD_PROJECT} --key-file=${GCLOUD_ACCOUNT_FILE} ${GCLOUD_ACCOUNT_EMAIL}
   fi
+
+	if [ -n "${GCLOUD_ZONE}" ]; then
+		gcloud config set compute/zone ${GCLOUD_ZONE}
+	fi
 
   if [ ! -z "$JENKINS_URL" ]; then
   	URL="-url $JENKINS_URL"
