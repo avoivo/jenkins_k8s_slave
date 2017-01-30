@@ -2,6 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER Athanasios Voivodas <tvoivodas@gmail.com>
 
+
 # Install tools
 RUN apt-get update && \
   apt-get install -y wget unzip python curl default-jre \
@@ -19,6 +20,8 @@ RUN mkdir -p /opt/gcloud && \
     rm -rf /tmp/*
 
 
+
+
 # docker slave
 
 ENV HOME /home/jenkins
@@ -32,12 +35,18 @@ RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-c
   && chmod 755 /usr/share/jenkins \
   && chmod 644 /usr/share/jenkins/slave.jar
 
+# create workspace
+RUN mkdir /var/jenkins
+
+RUN chown -R jenkins /var/jenkins
+RUN chgrp -R jenkins /var/jenkins
+
+
 
 USER jenkins
 RUN mkdir /home/jenkins/.jenkins
 VOLUME /home/jenkins/.jenkins
 WORKDIR /home/jenkins
-
 
 
 # entrypoint
